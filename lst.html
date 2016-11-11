@@ -1,0 +1,240 @@
+<admintpl file="header" />
+</head>
+<body class="J_scroll_fixed">
+<?php 
+		$vertical_arr = array('8','9','10','11','12');
+		$admin_arr_en = array( '8' => 'MMbang' , '9' => 'LMbang' , '10' => 'BBtree' , '11' => 'MMwang' , '12' => 'YEwang' );
+		$admin_arr_str = array( '8' => '妈妈帮' , '9' => '辣妈帮-孕期伴侣' , '10' => '宝宝树' , '11' => '妈妈网-妈妈圈-孕育管家' , '12' => '育儿网-妈妈社区-孕期提醒' );
+// 		var_dump($_SESSION);
+		$admin_name = $_SESSION['name'];
+		$admin_id = $_SESSION['ADMIN_ID'];
+ ?>
+	<div class="wrap J_check_wrap">
+		<ul class="nav nav-tabs">
+			<!-- <li><a href="{:U('Company/lst')}">商家列表</a></li> -->
+			<li class="active"><a href="#">用户绑定信息</a></li>
+			<!-- <li><a href="{:U('Post/add')}">添加职位</a></li> -->
+		</ul>
+		<form class="well form-search" name="form1" method="post" action="{:U('UserInfo/lst')}">
+			<div class="search_type cc mb10">
+				<div class="mb10">
+					<span class="mr20">
+						查询起止时间：
+						<input type="text" name="start_time" id="start_time" class="J_date" value="<?php echo $sel_time['gt']; ?>" style="width: 100px;" autocomplete="off">-
+						<input type="text" name="end_time"  id="end_time" class="J_date" value="<?php echo $sel_time['lt']; ?>" style="width: 100px;" autocomplete="off"> &nbsp; &nbsp;
+						网站名称： 
+						<select class="select_2" name="from_web" id = "from_web">
+							<option value='' >-- -- </option>
+                            <option value="妈妈帮" <?php if($where['from_web'][1] == '妈妈帮'){echo 'selected="selected"';}?>>妈妈帮</option>
+							<option value="宝宝树" <?php if($where['from_web'][1] == '宝宝树'){echo 'selected="selected"';}?> >宝宝树</option>
+                            <option value="育儿网-妈妈社区-孕期提醒" <?php if($where['from_web'][1] == '育儿网-妈妈社区-孕期提醒'){echo 'selected="selected"';}?>>育儿网-妈妈社区-孕期提醒</option>
+                            <option value="妈妈网-妈妈圈-孕育管家" <?php if($where['from_web'][1] == '妈妈网-妈妈圈-孕育管家'){echo 'selected="selected"';}?>>妈妈网-妈妈圈-孕育管家</option>
+                            <option value="辣妈帮-孕期伴侣" <?php if($where['from_web'][1] == '辣妈帮-孕期伴侣'){echo 'selected="selected"';}?>>辣妈帮-孕期伴侣</option>
+                            <option value="未绑定" <?php if($where['from_web'][1] == '未绑定'){echo 'selected="selected"';}?>>未绑定</option>
+						</select> &nbsp;&nbsp;
+						<?php if(!in_array($admin_id, $vertical_arr)){ ?>
+						修改记录： 
+						<select class="select_2" name="change_info" id = "change_info">
+							<option value='' >-- -- </option>
+                            <option value="blog" <?php if($change_info == 'blog'){echo 'selected="selected"';}?>>微博昵称</option>
+							<option value="from_web" <?php if($change_info == 'from_web'){echo 'selected="selected"';}?> >来源网站</option>
+                            <option value="web_nike_name" <?php if($change_info == 'web_nike_name'){echo 'selected="selected"';}?>>网站昵称</option>
+                         </select> &nbsp;&nbsp;
+						<?php } ?>
+                         <br/>
+						手机号： 
+						<input type="text" name="tel" id="tel" style="width: 200px;" value="<?php echo $tel;?>" placeholder="请输入手机号..."> &nbsp;&nbsp;
+						UID： 
+						<input type="text" name="uid" id="uid" style="width: 200px;" value="<?php echo $uid;?>" placeholder="请输入UID..."> &nbsp;&nbsp;
+						是否兑换 &nbsp;<input name="type" class="type" type="radio" value="check" onclick='check(this)' <?php if($type == 'check'){echo 'checked';}?>/> &nbsp; &nbsp;
+						是否增加积分 &nbsp;<input name="type" class="type" type="radio" value="integral" onclick='check(this)'<?php if($type == 'integral'){echo 'checked';}?>/> &nbsp; &nbsp;
+						是否有微博昵称 &nbsp;<input name="blog" class="type" type="radio" value="blog" onclick='check(this)'<?php if($blog == 'blog'){echo 'checked';}?>/> &nbsp; &nbsp;
+						
+						<!--<input type="submit" class="btn btn-primary" value="搜索" /> &nbsp; &nbsp;
+						<input type="reset" class="btn btn-primary" id="reset" value="重置" />&nbsp; &nbsp; 
+						 -->
+						<input type="submit" class="btn btn-primary" value="搜索" onclick="sub()"/> &nbsp; &nbsp;
+						<input type="reset" class="btn btn-primary" id="reset" value="重置" />&nbsp; &nbsp;
+                        <input type="button" id="export" class="btn btn-primary" value="导出" onclick="exp()"/>
+					</span>
+				</div>
+			</div>
+		</form>
+		<?php if(!in_array($admin_id, $vertical_arr)){ ?>
+		<form class="well form-search" id="form2" method="post" action="{:U('UserInfo/import')}" enctype="multipart/form-data">
+			<div class="search_type cc mb10">
+				<div class="mb10">
+					<span class="mr20">
+						导入积分： 
+						<input  type="file" name="file_stu" id="file_stu" style="width: 200px;"> &nbsp;&nbsp;
+						<input type="submit" class="btn btn-primary" value="导入" /> &nbsp; &nbsp;
+					</span>
+				</div>
+			</div>
+		</form>
+		<form class="well form-search" id="form2" method="post" action="{:U('UserInfo/uidImport')}" enctype="multipart/form-data">
+			<div class="search_type cc mb10">
+				<div class="mb10">
+					<span class="mr20">
+						导入积分(UID)： 
+						<input  type="file" name="file_uid" id="file_uid" style="width: 200px;"> &nbsp;&nbsp;
+						<input type="submit" class="btn btn-primary" value="导入" /> &nbsp; &nbsp;
+					</span>
+				</div>
+			</div>
+		</form>
+		<?php } ?>
+		<form method="post" class="J_ajaxForm" action="#">
+                <!--<div class="table-actions"> 
+                    <button class="btn btn-primary btn-small J_ajax_submit_btn" type="submit" data-action="{:u('Post/checkDisplay',array('display'=>1))}" data-subcheck="true">发布职位</button>
+                    <button class="btn btn-primary btn-small J_ajax_submit_btn" type="submit" data-action="{:u('Post/checkDisplay',array('undisplay'=>1))}" data-subcheck="true">撤销发布</button>
+                </div>
+                <php> $status=array("1"=>"已发布","0"=>"未发布"); </php> -->
+		<table class="table table-hover table-bordered">
+			<thead>
+				<tr>
+					<!-- <th width="16"><label><input type="checkbox" class="J_check_all" data-direction="x" data-checklist="J_check_x"></label></th> -->
+					<th width="50">序号</th>
+					<th>绑定手机号</th>
+					<th>绑定时间</th>
+					<th>目前积分</th>
+					<th>微信昵称</th>
+					<th>微信openid</th>
+					<th>绑定网站</th>
+					<th>账户昵称</th>
+					<th>网站UID</th>
+					<th>微博昵称</th>
+					<?php if(!in_array($admin_id, $vertical_arr)){ ?>
+					<th>微博UID</th>
+					<?php }?>
+					<th>积分等级</th>
+					<th>宝宝预产期</th>
+					<th>二宝预产期</th>
+					<!-- <th>历史积分详情</th> -->
+					<!--<th>开始时间</th>
+					<th>结束时间</th>
+					<th>添加时间</th>-->
+					<!-- <th>职位发布者</th> -->
+					<th width="120">管理操作</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<foreach name="data" item="v">
+				<tr>
+					<td>{$key+1}</td>
+					<td>{$v.tel}</td>
+					<td>{$v.bind_time}</td>
+					<td>{$v.integral}</td>
+					<td>{$v.weixinNick}</td>
+					<td>{$v.openid}</td>
+					<td>{$v.from_web}</td>
+					<td>{$v.web_nike_name}</td>
+					<td>{$v.web_uid}</td>
+					<td>{$v.blog}</td>
+					<?php if(!in_array($admin_id, $vertical_arr)){ ?>
+					<td>{$v.blog_uid}</td>
+					<?php }?>
+					<td>
+						<?php
+							$integral = $v['total_integral'];
+							// 等级判断
+							if($integral >= 5 && $integral < 10){
+								$level = 1;
+							}elseif($integral >= 10 && $integral < 50){
+								$level = 2;
+							}elseif($integral >= 50 && $integral < 150){
+								$level = 3;
+							}elseif($integral >= 150 && $integral < 200){
+								$level = 4;
+							}elseif($integral >= 200 && $integral < 300){
+								$level = 5;
+							}elseif ($integral >= 300) {
+								$level = 6;
+							}else{
+								$level = 0;
+							}
+							echo $level;	
+						?>
+					</td>
+					<td>{$v.baby_birth}</td>
+					<td>{$v.second_baby_birth}</td>
+					<td>
+						<a href="{:U('UserInfo/integral?id='.$v['id'])}">积分详情</a>
+						<?php if(!in_array($admin_id, $vertical_arr)){ ?>
+						<!--  | <a href="{:U('UserInfo/changeUid?id='.$v['id'])}">修改UID</a> -->
+						  | <a href="{:U('UserInfo/edit?id='.$v['id'])}">修改信息</a>
+						  | <a href="{:U('UserInfo/infoChangeLog?id='.$v['id'])}">修改记录</a>
+						 <?php } ?>
+					</td>
+				</tr>
+				</foreach>
+			</tbody>
+			<tfoot>
+               <tr>
+               
+				</tr>
+			  </tfoot>
+		</table>
+				<!-- <div class="table-actions">
+                    <button class="btn btn-primary btn-small J_ajax_submit_btn" type="submit" data-action="{:u('Post/checkDisplay',array('display'=>1))}" data-subcheck="true">发布职位</button>
+                    <button class="btn btn-primary btn-small J_ajax_submit_btn" type="submit" data-action="{:u('Post/checkDisplay',array('undisplay'=>1))}" data-subcheck="true">撤销发布</button>
+                </div> -->
+            </form>
+		<div class="pagination" id = "turn-page">{$page}</div>  
+		<div>活动绑定人数：{$total} &nbsp;&nbsp;&nbsp;  条件筛选人数：{$count}</div>
+        </div>
+	</div>
+	<script src="__ROOT__/statics/js/common.js"></script>
+</body>
+</html>
+
+<script>
+	// 清空重置
+	$("#reset").click(function(){
+		var com_id = $("#com_id").val();
+		var op_id = "op_"+com_id;
+		var from_web = $("#from_web");
+
+		// $("#from_web option").remove('selected');
+		$("#from_web").find("option:selected").removeAttr('selected');
+		$(".type").attr("checked",false);
+		$("#tel").attr('value','');
+		$("#start_time").attr('value','');
+		$("#end_time").attr('value','');
+		var text = $("#"+op_id).text();
+		// alert(text);
+		$("#com_id").append("<option value="+op_id+">"+text+"</option>");
+		var text = $("#"+op_id).remove();
+		
+		
+	});
+</script>
+
+ <script language="javascript">  
+ // 单选按钮点击选中和取消
+    var tempradio= null;    
+    function check(checkedRadio)    
+    {    
+        if(tempradio== checkedRadio){  
+            tempradio.checked=false;  
+            tempradio=null;  
+          }   
+           else{  
+               tempradio= checkedRadio;    
+         }  
+     }    
+
+
+     // 
+     function exp()
+	{
+		document.form1.action="__CONTROLLER__/export";
+		document.form1.submit();
+	}
+	function sub()
+	{
+		document.form1.action="__CONTROLLER__/lst";
+		document.form1.submit();
+	}
+</script>  
